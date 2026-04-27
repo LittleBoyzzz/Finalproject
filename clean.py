@@ -1,22 +1,26 @@
 import pandas as pd
 import numpy as np
 import os
+import warnings
 
+warnings.filterwarnings('ignore', category=FutureWarning)
+warnings.filterwarnings('ignore', category=DeprecationWarning)
+warnings.filterwarnings('ignore', category=UserWarning)
 # ตั้งค่าที่อยู่ไฟล์ให้ตรงกับที่เก็บ Script
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-# 1. Load Data (ข้ามบรรทัด Brief)
+# 1. Load Data
 df = pd.read_csv("BU Data from Survey Cases_final(5).csv", encoding='utf-8-sig', skiprows=1)
 initial_rows = len(df)
 
-# 2. กรองเฉพาะเนื้อข้อมูลจริง (ผู้ที่มีประสบการณ์เลี้ยง/ซื้อ)
+# 2. กรองเฉพาะเนื้อข้อมูลจริง
 df = df[df.iloc[:, 1] == 'เคย'].copy()
 
-# ---------------------------------------------------------
-# 3. Standardization (จัดกลุ่มแบรนด์และสายพันธุ์แมว)
-# ---------------------------------------------------------
 
-# ฟังก์ชันจัดกลุ่มสายพันธุ์แมว (เพิ่มตามคำขอ)
+# 3. Standardization
+
+
+# ฟังก์ชันจัดกลุ่มสายพันธุ์แมว
 def standardize_breed(text):
     if pd.isna(text): return 'อื่นๆ/ไม่ระบุ'
     text = str(text).lower().strip()
@@ -47,16 +51,15 @@ if breed_col in df.columns:
 if brand_col in df.columns:
     df['Brand_Cleaned'] = df[brand_col].apply(standardize_brand)
 
-# ---------------------------------------------------------
-# 4. กำจัด Noise (ตัดคอลัมน์ที่ว่างเกิน 30% ออก)
-# ---------------------------------------------------------
+# 4. กำจัด Noise
+
 # เราเก็บคอลัมน์ที่เราเพิ่งสร้างใหม่ไว้ด้วย โดยการรวมเข้ากับเกณฑ์การตัด
 limit = len(df) * 0.7
 df = df.dropna(thresh=limit, axis=1)
 
-# ---------------------------------------------------------
+
 # 5. แปลงค่าความรู้สึก (Likert Scale) เป็นตัวเลข 1-5
-# ---------------------------------------------------------
+
 likert_map = {
     'เห็นด้วยที่สุด': 5, 'มากที่สุด': 5,
     'เห็นด้วย': 4, 'มาก': 4,
@@ -74,9 +77,9 @@ for col in df.columns:
             df[col] = df[col].map(likert_map).fillna(df[col])
             df[col] = pd.to_numeric(df[col], errors='ignore')
 
-# ---------------------------------------------------------
+
 # 6. สร้าง Target Variable (Option 6)
-# ---------------------------------------------------------
+
 target_candidates = [col for col in df.columns if 'Option 6' in col]
 if target_candidates:
     target_col = target_candidates[0]
