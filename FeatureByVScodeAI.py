@@ -155,6 +155,6 @@ plt.show()
 # ==========================================
 # เอา X ที่แปลงร่างเสร็จแล้ว มารวมกับ y แล้วเซฟเป็นไฟล์ใหม่
 final_df = X_encoded.copy()
-final_df[target_col] = y_encoded
+final_df['Purchase_Target'] = y_encoded
 final_df.to_csv('Model_Ready_Data.csv', index=False, encoding='utf-8-sig')
 print("\n✅ บันทึกไฟล์ Model_Ready_Data.csv สำหรับทำขั้นตอนต่อไปเรียบร้อยแล้ว!")
