@@ -141,8 +141,6 @@ plt.xlabel('F-Statistic Score (ค่าสถิติความสำคั�
 plt.ylabel('ชื่อตัวแปร', fontsize=12)
 plt.axvline(x=0, color='grey', linestyle='--')
 plt.tight_layout()
-plt.savefig('statistical_feature_importance.png', dpi=300, bbox_inches='tight')
-logging.info("Statistical feature importance plot saved as 'statistical_feature_importance.png'")
 plt.show()
 
 # ==========================================
